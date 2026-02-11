@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.shareit.item.dto.ItemCreateDto;
-import ru.practicum.shareit.item.dto.ItemUpdateDto;
-import ru.practicum.shareit.item.mapper.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
@@ -29,42 +26,34 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
-    private final ItemMapper itemMapper;
 
     @GetMapping
-    public List<ItemCreateDto> getItemsByUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.getItemsByUser(userId)
-                .stream()
-                .map(itemMapper::mapToItemDto)
-                .toList();
+    public List<ItemDto> getItemsByUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
+        return itemService.getItemsByUser(userId);
     }
 
     @GetMapping("/{itemId}")
-    public ItemCreateDto getItemById(@PathVariable Long itemId) {
-        return itemMapper.mapToItemDto(itemService.getItemById(itemId));
+    public ItemDto getItemById(@PathVariable Long itemId) {
+        return itemService.getItemById(itemId);
     }
 
     @GetMapping("/search")
-    public List<ItemCreateDto> searchItem(@RequestParam String text) {
-        return itemService.searchItem(text)
-                .stream()
-                .map(itemMapper::mapToItemDto)
-                .toList();
+    public List<ItemDto> searchItem(@RequestParam String text) {
+        return itemService.searchItem(text);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemCreateDto create(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                @Valid @RequestBody ItemCreateDto itemDto) {
-        Item item = itemMapper.mapToItem(itemDto);
-        return itemMapper.mapToItemDto(itemService.createItem(userId, item));
+    public ItemDto create(@RequestHeader("X-Sharer-User-Id") Long userId,
+                          @Valid @RequestBody ItemDto itemDto) {
+        return itemService.createItem(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemCreateDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                    @RequestBody ItemUpdateDto itemDto,
-                                    @PathVariable Long itemId) {
-        return itemMapper.mapToItemDto(itemService.updateItem(userId, itemDto, itemId));
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
+                              @RequestBody ItemDto itemDto,
+                              @PathVariable Long itemId) {
+        return itemService.updateItem(userId, itemDto, itemId);
     }
 
     @DeleteMapping("/{itemId}")

@@ -5,14 +5,14 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
 public class Booking {
     private Long id;
-    private LocalDateTime start;
-    private LocalDateTime end;
+    private Instant start;
+    private Instant end;
     private Item item;
     private User booker;
     private BookingStatus status;

@@ -6,10 +6,12 @@ import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
-@Mapper(componentModel = "spring", uses = {UserMapper.class})
+import java.time.Instant;
+
+@Mapper(componentModel = "spring", uses = {UserMapper.class}, imports = {Instant.class})
 public interface ItemRequestMapper {
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "created", expression = "java(LocalDateTime.now())")
+    @Mapping(target = "created", expression = "java(Instant.now())")
     ItemRequest mapToItemRequest(ItemRequestDto itemRequestDto);
 
     ItemRequestDto mapToItemRequestDto(ItemRequest itemRequest);

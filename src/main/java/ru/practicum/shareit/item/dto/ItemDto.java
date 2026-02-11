@@ -3,9 +3,8 @@ package ru.practicum.shareit.item.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
 
-public record ItemCreateDto(
+public record ItemDto(
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         Long id,
 
@@ -16,7 +15,5 @@ public record ItemCreateDto(
         String description,
 
         @NotNull(message = "Статус доступности обязателен")
-        Boolean available,
-
-        ItemRequestDto request){
+        Boolean available){
 }
