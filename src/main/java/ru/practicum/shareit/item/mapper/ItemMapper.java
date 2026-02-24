@@ -4,10 +4,12 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import ru.practicum.shareit.booking.mapper.BookingMapper;
+import ru.practicum.shareit.item.dto.ItemDataDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
-@Mapper(componentModel = "spring",
+@Mapper(componentModel = "spring", uses = {BookingMapper.class, CommentMapper.class},
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ItemMapper {
     @Mapping(target = "id", ignore = true)
@@ -21,4 +23,8 @@ public interface ItemMapper {
     void updateMapToItem(ItemDto itemDto, @MappingTarget Item item);
 
     ItemDto mapToItemDto(Item item);
+
+    @Mapping(target = "lastBooking", ignore = true)
+    @Mapping(target = "nextBooking", ignore = true)
+    ItemDataDto mapToItemDataDto(Item item);
 }

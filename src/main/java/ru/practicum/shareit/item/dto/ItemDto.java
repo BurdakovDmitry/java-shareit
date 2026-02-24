@@ -3,17 +3,28 @@ package ru.practicum.shareit.item.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record ItemDto(
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class ItemDto {
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-        Long id,
+        private Long id;
 
         @NotBlank(message = "Название не может быть пустым")
-        String name,
+        private String name;
 
         @NotBlank(message = "Описание не может быть пустым")
-        String description,
+        private String description;
 
         @NotNull(message = "Статус доступности обязателен")
-        Boolean available){
+        private Boolean available;
+
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+        private List<CommentDto> comments;
 }

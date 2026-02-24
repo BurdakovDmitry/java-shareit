@@ -17,13 +17,13 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserServiceImp implements UserService {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     @Override
     public List<UserDto> getUsers() {
-        Collection<User> users = userRepository.getUsers();
+        Collection<User> users = userRepository.findAll();
 
         log.info("Получен список пользователей: {}", users);
 
@@ -34,7 +34,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserDto getUserById(Long userId) {
-        User user = userRepository.getUserById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
 
         log.info("Получен пользователь с id = {}", userId);
@@ -46,12 +46,12 @@ public class UserServiceImp implements UserService {
     public UserDto createUser(UserDto userDto) {
         User user = userMapper.mapToUser(userDto);
 
-        userRepository.getUserByEmail(userDto.email()).ifPresent(userByEmail -> {
+        userRepository.findByEmail(userDto.email()).ifPresent(userByEmail -> {
             log.warn("Email {} уже используется", userDto.email());
             throw new DuplicatedDataException("Данный email уже используется");
         });
 
-        User newUser = userRepository.createUser(user);
+        User newUser = userRepository.save(user);
 
         log.info("Добавлен новый пользователь: {}", newUser);
 
@@ -60,7 +60,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserDto updateUser(UserDto userDto, Long userId) {
-        User oldUser = userRepository.getUserById(userId)
+        User oldUser = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
 
         if (userDto.email() != null && !userDto.email().contains("@")) {
@@ -70,14 +70,14 @@ public class UserServiceImp implements UserService {
 
         userMapper.updateMapToUser(userDto, oldUser);
 
-        userRepository.getUserByEmail(oldUser.getEmail())
+        userRepository.findByEmail(oldUser.getEmail())
                 .filter(user -> !user.getId().equals(userId))
                 .ifPresent(user -> {
                     log.warn("Email {} уже занят другим пользователем", oldUser.getEmail());
                     throw new DuplicatedDataException("Данный email уже используется");
                 });
 
-        User updateUser = userRepository.updateUser(oldUser);
+        User updateUser = userRepository.save(oldUser);
 
         log.info("Обновлены данные пользователя: {}", updateUser);
 
@@ -86,10 +86,10 @@ public class UserServiceImp implements UserService {
 
     @Override
     public void deleteUser(Long userId) {
-        userRepository.getUserById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Пользователь с id = " + userId + " не найден"));
 
-        userRepository.deleteUser(userId);
+        userRepository.deleteById(userId);
 
         log.info("Пользователь с id = {} спешно удален", userId);
     }
