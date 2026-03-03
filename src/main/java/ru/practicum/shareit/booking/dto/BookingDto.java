@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
-import ru.practicum.shareit.booking.BookingStatus;
+import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.user.dto.UserDto;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 public record BookingDto(
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -16,13 +16,16 @@ public record BookingDto(
 
         @NotNull(message = "Дата начала бронирования не может быть пустой")
         @FutureOrPresent(message = "Дата начала бронирования не может быть в прошлом")
-        Instant start,
+        LocalDateTime start,
 
         @NotNull(message = "Дата окончания бронирования не может быть пустой")
         @Future(message = "Дата окончания бронирования должна быть в будущем")
-        Instant end,
+        LocalDateTime end,
 
         @NotNull(message = "Объект бронирования должен быть указан")
+        Long itemId,
+
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
         ItemDto item,
 
         @JsonProperty(access = JsonProperty.Access.READ_ONLY)

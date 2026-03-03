@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request;
+package ru.practicum.shareit.item.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,29 +13,32 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
-import ru.practicum.shareit.user.model.User;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "requests")
+@Table(name = "comments")
 @Getter
 @Setter
 @ToString
-public class ItemRequest {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "request_id")
+    @Column(name = "comment_id")
     private Long id;
 
-    @Column(name = "request_description", nullable = false, length = 5000)
-    private String description;
+    @Column(name = "comment_text", nullable = false, length = 5000)
+    private String text;
+
+    @Column(name = "comment_created", nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime created;
+
+    @Column(name = "author_name", nullable = false)
+    private String authorName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "requestor_id", nullable = false)
-    private User requestor;
-
-    @Column(name = "created", nullable = false)
-    @CreationTimestamp
-    private Instant created;
+    @JoinColumn(name = "item_id", nullable = false)
+    @ToString.Exclude
+    private Item item;
 }
