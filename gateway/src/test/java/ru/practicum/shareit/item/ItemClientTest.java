@@ -15,6 +15,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.header;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
@@ -85,6 +86,17 @@ class ItemClientTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         mockServer.verify();
+    }
+
+    @Test
+    void searchItemItIsBlank() {
+        ResponseEntity<Object> response = itemClient.searchItem("   ");
+
+        mockServer.verify();
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(List.of(), response.getBody());
     }
 
     @Test
