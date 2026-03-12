@@ -4,7 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 import ru.practicum.shareit.item.dto.ItemAnswerDto;
+import ru.practicum.shareit.item.dto.ItemDataDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
@@ -77,5 +79,95 @@ class ItemMapperTest {
         ItemRequest request = mapper.request(null);
 
         assertNull(request);
+    }
+
+    @Test
+    void mapToItemDto() {
+        ItemRequest request = new ItemRequest();
+        request.setId(5L);
+        item.setRequest(request);
+
+        ItemDto resultDto = mapper.mapToItemDto(item);
+
+        assertNotNull(resultDto);
+        assertEquals(itemId, resultDto.getId());
+        assertEquals(5L, resultDto.getRequestId());
+    }
+
+    @Test
+    void mapToItemDataDto() {
+        ItemDataDto dataDto = mapper.mapToItemDataDto(item);
+
+        assertNotNull(dataDto);
+        assertEquals("Item", dataDto.getName());
+        assertNull(dataDto.getLastBooking());
+        assertNull(dataDto.getNextBooking());
+    }
+
+    @Test
+    void mapToItemNull() {
+        assertNull(mapper.mapToItem(null));
+        assertNull(mapper.mapToItemDto(null));
+        assertNull(mapper.mapToItemDataDto(null));
+        assertNull(mapper.mapToItemAnswerDto(null));
+    }
+
+    @Test
+    void updateMapToItemDtoIsNull() {
+        String oldName = item.getName();
+        mapper.updateMapToItem(null, item);
+        assertEquals(oldName, item.getName());
+    }
+
+    @Test
+    void requestValidId() {
+        Long requestId = 5L;
+        ItemRequest result = mapper.request(requestId);
+
+        assertNotNull(result);
+        assertEquals(requestId, result.getId());
+    }
+
+    @Test
+    void mapToItemDataDtoComments() {
+        Comment comment = new Comment();
+        comment.setId(1L);
+        comment.setText("Comment");
+        item.setComments(List.of(comment));
+
+        ItemDataDto result = mapper.mapToItemDataDto(item);
+
+        assertNotNull(result);
+        assertEquals(1, result.getComments().size());
+        assertEquals("Comment", result.getComments().getFirst().text());
+    }
+
+    @Test
+    void mapToItemDtoRequestIsNull() {
+        item.setRequest(null);
+
+        ItemDto dto = mapper.mapToItemDto(item);
+
+        assertNull(dto.getRequestId());
+    }
+
+    @Test
+    void mapToItemAnswerDtoOwnerIsNull() {
+        item.setOwner(null);
+
+        ItemAnswerDto answerDto = mapper.mapToItemAnswerDto(item);
+
+        assertNotNull(answerDto);
+        assertNull(answerDto.ownerId());
+    }
+
+    @Test
+    void mapToItemDataDtoCommentsNull() {
+        item.setComments(null);
+
+        ItemDataDto dataDto = mapper.mapToItemDataDto(item);
+
+        assertNotNull(dataDto);
+        assertNull(dataDto.getComments());
     }
 }
