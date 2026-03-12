@@ -138,6 +138,24 @@ class UserServiceImplTest {
     }
 
     @Test
+    void updateUserDuplicateEmail() {
+        User updateUser = new User();
+        updateUser.setId(2L);
+        updateUser.setEmail("test@test.com");
+        updateUser.setName("newUser");
+
+        UserDto updateUserDto = new UserDto(userId, "test@test.com", "newUser");
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(updateUser));
+
+        assertThrows(DuplicatedDataException.class,
+                () -> userService.updateUser(updateUserDto, userId));
+
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
     void deleteUser() {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 

@@ -18,12 +18,14 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -387,5 +389,18 @@ class BookingServiceImplTest {
 
         assertThrows(ValidationException.class, () ->
                 bookingService.getBookingByOwner(ownerId, BookingStatus.APPROVED));
+    }
+
+    @Test
+    void getBookingByOwnerListEmpty() {
+        when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
+        when(bookingRepository.findAllByItemOwnerOrderByStartDesc(owner))
+                .thenReturn(Collections.emptyList());
+
+        List<BookingDto> bookings = bookingService.getBookingByOwner(ownerId, BookingStatus.ALL);
+
+        assertNotNull(bookings);
+        assertTrue(bookings.isEmpty());
+        verify(bookingRepository, times(1)).findAllByItemOwnerOrderByStartDesc(owner);
     }
 }

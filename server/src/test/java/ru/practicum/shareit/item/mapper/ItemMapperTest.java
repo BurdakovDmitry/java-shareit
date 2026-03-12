@@ -6,6 +6,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import ru.practicum.shareit.item.dto.ItemAnswerDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
@@ -69,5 +70,12 @@ class ItemMapperTest {
         ItemAnswerDto dto = mapper.mapToItemAnswerDto(item);
 
         assertEquals(2L, dto.ownerId());
+    }
+
+    @Test
+    void requestNull() {
+        ItemRequest request = mapper.request(null);
+
+        assertNull(request);
     }
 }

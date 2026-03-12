@@ -137,6 +137,14 @@ class ItemServiceImplTest {
     }
 
     @Test
+    void searchItemTextNull() {
+        List<ItemDto> items = itemService.searchItem(null);
+
+        assertTrue(items.isEmpty());
+        verify(itemRepository, never()).search(null);
+    }
+
+    @Test
     void createItem() {
         when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
         when(itemMapper.mapToItem(itemDto)).thenReturn(item);
@@ -168,6 +176,8 @@ class ItemServiceImplTest {
     void updateItemNotOwner() {
         ItemDto updateDto = new ItemDto();
         updateDto.setName("NewItem");
+
+        when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
 
         assertThrows(NotFoundException.class, () -> itemService.updateItem(99L, updateDto, itemId));
         verify(itemRepository, never()).save(item);
