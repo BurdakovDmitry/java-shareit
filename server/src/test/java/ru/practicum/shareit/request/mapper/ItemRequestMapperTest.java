@@ -3,7 +3,6 @@ package ru.practicum.shareit.request.mapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
-import ru.practicum.shareit.item.mapper.ItemMapperImpl;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestGetDto;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -21,7 +20,6 @@ class ItemRequestMapperTest {
     @BeforeEach
     void setUp() {
         ReflectionTestUtils.setField(mapper, "userMapper", new UserMapperImpl());
-        ReflectionTestUtils.setField(mapper, "itemMapper", new ItemMapperImpl());
     }
 
     @Test
